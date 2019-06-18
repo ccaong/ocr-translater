@@ -23,5 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ocr.OcrActivity" />
+        <activity android:name=".translate.TranslateActivity" />
+        <activity android:name=".common.SettingActivity" />
+        <activity android:name=".ocr.ShowImageActivity" />
     </application>
 </manifest>
