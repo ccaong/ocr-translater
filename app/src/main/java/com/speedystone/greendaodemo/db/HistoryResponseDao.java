@@ -42,7 +42,7 @@ public class HistoryResponseDao extends AbstractDao<HistoryResponse, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"HISTORY_RESPONSE\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"IMAGE_PATH\" TEXT," + // 1: imagePath
                 "\"TEXT\" TEXT);"); // 2: text
     }

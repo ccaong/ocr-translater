@@ -1,16 +1,21 @@
-package com.example.ocrandtranslate.ocr;
+package com.example.ocrandtranslate.sharpen;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.baidu.aip.util.Base64Util;
 import com.baidu.aip.util.Util;
+import com.bumptech.glide.Glide;
 import com.example.ocrandtranslate.R;
 import com.example.ocrandtranslate.base.BaseActivity;
+import com.example.ocrandtranslate.ocr.ImageSharpeningResponse;
 import com.example.ocrandtranslate.util.FileUtil;
 import com.example.ocrandtranslate.util.HttpUtil;
 import com.google.gson.Gson;
@@ -26,7 +31,8 @@ import static com.example.ocrandtranslate.util.AuthService.getAuth;
  * @author devel
  */
 public class ShowImageActivity extends BaseActivity {
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.image)
     ImageView image;
 
@@ -36,17 +42,53 @@ public class ShowImageActivity extends BaseActivity {
         setContentView(R.layout.activity_show_image);
         ButterKnife.bind(this);
 
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                FileUtil.decoderBase64File();
+                MyImageProcessor.saveImageToGallery(ShowImageActivity.this, MyImageProcessor.drawableToBitmap(image.getDrawable()));
             }
         });
 
         Intent intent = getIntent();
         String path = intent.getStringExtra("PATH");
-        contrastEnhance(path);
+//        contrastEnhance(path);
+        sharpenPicture(path);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void sharpenPicture(String path) {
+
+        Glide.with(this)
+                .load(path)
+                .into(image);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(path, getBitmapOption(1));
+        Bitmap sharpenBitmap = MyImageProcessor.sharpenPicture(bitmap);
+
+        image.setImageBitmap(sharpenBitmap);
+    }
+
+    private BitmapFactory.Options getBitmapOption(int inSampleSize) {
+        System.gc();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPurgeable = true;
+        options.inSampleSize = inSampleSize;
+        return options;
+    }
+
 
     public void contrastEnhance(final String path) {
 

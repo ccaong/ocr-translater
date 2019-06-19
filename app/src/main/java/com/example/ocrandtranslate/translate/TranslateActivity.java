@@ -3,6 +3,8 @@ package com.example.ocrandtranslate.translate;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,11 +24,14 @@ import butterknife.OnClick;
  * @author devel
  */
 public class TranslateActivity extends BaseActivity {
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.edit_input)
     EditText editInput;
     @BindView(R.id.tv_result)
     TextView tvResult;
+    @BindView(R.id.tv_result_title)
+    TextView tvResultTitle;
 
     private Handler handler = new Handler();
 
@@ -35,6 +40,20 @@ public class TranslateActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.btn_translate)
@@ -63,12 +82,12 @@ public class TranslateActivity extends BaseActivity {
                     public void run() {
 
                         String dst = "";
-                        for (TranslateResult.TransResultBean s : trans_result
-                                ) {
-                            dst = dst + "\n" + s.getDst();
+                        for (TranslateResult.TransResultBean s : trans_result) {
+                            dst = dst + s.getDst() + "\n";
                         }
 
                         tvResult.setText(dst);
+                        tvResultTitle.setVisibility(View.VISIBLE);
                         tvResult.setVisibility(View.VISIBLE);
                     }
                 });

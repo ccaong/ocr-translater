@@ -17,10 +17,11 @@ import com.baidu.ocr.sdk.model.AccessToken;
 import com.example.ocrandtranslate.R;
 import com.example.ocrandtranslate.base.BaseFragment;
 import com.example.ocrandtranslate.common.Common;
+import com.example.ocrandtranslate.common.MainActivity;
 import com.example.ocrandtranslate.ocr.HistoryResponse;
 import com.example.ocrandtranslate.ocr.OcrResponse;
 import com.example.ocrandtranslate.ocr.RecognizeService;
-import com.example.ocrandtranslate.ocr.ShowImageActivity;
+import com.example.ocrandtranslate.sharpen.ShowImageActivity;
 import com.example.ocrandtranslate.translate.TranslateActivity;
 import com.example.ocrandtranslate.util.FileUtil;
 import com.example.ocrandtranslate.util.ImageSelectUtil;
@@ -55,6 +56,8 @@ public class MainFragment extends BaseFragment {
     private HistoryResponse historyResponse;
     private PromptDialog promptDialog;
 
+    private MainActivity mainActivity;
+
     @Override
     public int getLayoutResId() {
         return R.layout.fragment_main;
@@ -64,6 +67,7 @@ public class MainFragment extends BaseFragment {
     protected View initView(Bundle savedInstanceState) {
         alertDialog = new AlertDialog.Builder(getActivity());
         promptDialog = new PromptDialog(getActivity());
+        mainActivity = (MainActivity) getActivity();
         return null;
     }
 
@@ -138,24 +142,25 @@ public class MainFragment extends BaseFragment {
 
             @Override
             public void onNext(Boolean aBoolean) {
-                switch (flag) {
-                    case 0:
-                        if (checkTokenStatus()) {
-                            ImageSelectUtil.selectImageOfCamera(MainFragment.this, code);
-                        }
-                        break;
-                    case 1:
-                        if (checkTokenStatus()) {
-                            ImageSelectUtil.selectImageFromAlbum(MainFragment.this, code);
-                        }
-                        break;
-                    case 2:
-                        ImageSelectUtil.selectImageFromAlbum(MainFragment.this, code);
-                        break;
-                    default:
-                        break;
-                }
                 if (aBoolean) {
+                    switch (flag) {
+                        case 0:
+                            if (checkTokenStatus()) {
+                                ImageSelectUtil.selectImageOfCamera(MainFragment.this, code);
+                            }
+                            break;
+                        case 1:
+                            if (checkTokenStatus()) {
+                                ImageSelectUtil.selectImageFromAlbum(MainFragment.this, code);
+                            }
+                            break;
+                        case 2:
+                            ImageSelectUtil.selectImageFromAlbum(MainFragment.this, code);
+                            break;
+                        default:
+                            break;
+                    }
+
                 } else {
                     Toast.makeText(activity, "请先授予权限，否者该功能无法使用！", Toast.LENGTH_SHORT).show();
                 }
@@ -232,6 +237,10 @@ public class MainFragment extends BaseFragment {
 
                 alertText("识别成功", stringBuffer.toString().trim());
                 copyText(stringBuffer.toString().trim());
+
+                if (mainActivity != null) {
+                    mainActivity.updateHistory();
+                }
             }
 
         }
@@ -259,4 +268,5 @@ public class MainFragment extends BaseFragment {
         cm.setPrimaryClip(mClipData);
         Toast.makeText(activity, "文字已复制到粘贴板", Toast.LENGTH_SHORT).show();
     }
+
 }

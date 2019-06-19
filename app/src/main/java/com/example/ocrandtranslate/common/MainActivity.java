@@ -28,8 +28,8 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.view_pager)
     NoScrollViewPager viewPager;
-
     FragmentViewPagerAdapter adapter;
+    HistoryFragment historyFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,9 +41,9 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         ArrayList<Fragment> mFragmentList = new ArrayList<>();
-
+        historyFragment = new HistoryFragment();
         mFragmentList.add(new MainFragment());
-        mFragmentList.add(new HistoryFragment());
+        mFragmentList.add(historyFragment);
         adapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragmentList);
         viewPager.setAdapter(adapter);
         viewPager.setScanScroll(false);
@@ -64,6 +64,12 @@ public class MainActivity extends BaseActivity {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void updateHistory() {
+        if (historyFragment!=null) {
+            historyFragment.getList();
         }
     }
 

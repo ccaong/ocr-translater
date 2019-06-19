@@ -43,7 +43,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        final HistoryResponse response = list.get(0);
+        final HistoryResponse response = list.get(position);
         if (response != null) {
             Glide.with(context).load(response.getImagePath()).into(holder.ivTitle);
             holder.textView.setText(response.getText());

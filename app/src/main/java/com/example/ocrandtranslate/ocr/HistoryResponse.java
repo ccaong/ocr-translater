@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class HistoryResponse {
 
-    @Id
+    @Id(autoincrement = true)
     private Long id;
 
     private String imagePath;
@@ -48,6 +48,5 @@ public class HistoryResponse {
     public void setText(String text) {
         this.text = text;
     }
-
 
 }
