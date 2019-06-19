@@ -3,6 +3,10 @@ package com.example.ocrandtranslate.sharpen;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -55,8 +59,11 @@ public class ShowImageActivity extends BaseActivity {
 
         Intent intent = getIntent();
         String path = intent.getStringExtra("PATH");
+        Bitmap bitmap = BitmapFactory.decodeFile(path, getBitmapOption(1));
+        image.setImageBitmap( bitmap2Gray(bitmap));
+
 //        contrastEnhance(path);
-        sharpenPicture(path);
+//        sharpenPicture(path);
     }
 
     @Override
@@ -87,6 +94,31 @@ public class ShowImageActivity extends BaseActivity {
         options.inPurgeable = true;
         options.inSampleSize = inSampleSize;
         return options;
+    }
+
+    /**
+     * 图片灰度化处理
+     *
+     * @param bmSrc
+     */
+    public Bitmap bitmap2Gray(Bitmap bmSrc) {
+
+        // 得到图片的长和宽
+        int width = bmSrc.getWidth();
+        int height = bmSrc.getHeight();
+        // 创建目标灰度图像
+        Bitmap bmpGray = null;
+        bmpGray = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        // 创建画布
+        Canvas c = new Canvas(bmpGray);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmSrc, 0, 0, paint);
+        return bmpGray;
+
     }
 
 
